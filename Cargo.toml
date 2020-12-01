@@ -1,0 +1,15 @@
+[package]
+name = "adventofcode2020"
+version = "0.1.0"
+authors = ["Tristan <tristan.king@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+
+
+[lib]
+path = "src/common.rs"
+
+[[bin]]
+name = "day_01"
+path = "src/day_01.rs"
