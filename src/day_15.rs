@@ -1,20 +1,13 @@
 use std::collections::HashMap;
 
 fn solve(starting: &[usize], limit: usize) -> usize {
-    let map = starting.iter().take(starting.len() - 1).enumerate()
+    let mut map = starting.iter().take(starting.len() - 1).enumerate()
         .map(|(i, c)| (*c, i + 1))
         .collect::<HashMap<usize, usize>>();
-    let (_, last) = (starting.len()..limit)
-        .fold((map, starting[starting.len() - 1]), |(mut map, last), turn| {
-            let next = if let Some(prev) = map.get(&last) {
-                turn - prev
-            } else {
-                0
-            };
-            map.insert(last, turn);
-            (map, next)
-        });
-    last
+    (starting.len()..limit)
+        .fold(starting[starting.len() - 1], |last, turn| {
+            turn - map.insert(last, turn).unwrap_or(turn)
+        })
 }
 
 fn main() {
