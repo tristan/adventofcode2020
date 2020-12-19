@@ -90,7 +90,7 @@ fn process_math_part2(math: &mut dyn Iterator<Item=&Op>) -> i64 {
                             },
                             (Op::Mul, Op::Add) => {
                                 stack.push(
-                                    (Some(cop), current_vals.clone())
+                                    (Some(cop), current_vals)
                                 );
                                 current_op = Some(op);
                                 current_vals = vec![];
