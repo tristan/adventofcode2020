@@ -37,18 +37,19 @@ fn part1(mut cups: Vec<u8>) -> String {
     cups.into_iter().skip(1).map(|cup| (cup + '0' as u8) as char).collect()
 }
 
-fn part2(mut cups: Vec<u8>) -> u64 {
-    cups.push(10);
-    let mut current: u32 = cups[0] as u32;
-    let mut cups: HashMap<u32, u32> = cups.windows(2).map(|arr| (arr[0] as u32, arr[1] as u32)).collect();
+fn part2(input: Vec<u8>) -> u64 {
     let largest: u32 = 1000000;
-    cups.insert(largest, current);
-
+    let mut current: u32 = input[0] as u32;
+    let mut cups: Vec<u32> = vec![0; largest as usize + 1];
+    input.windows(2).for_each(|arr| cups[arr[0] as usize] = arr[1] as u32);
+    cups[input[input.len() - 1] as usize] = 10;
+    cups[largest as usize] = current;
+    (10..largest).for_each(|i| cups[i as usize] = i + 1);
     for _ in 0..10000000 {
-        let p1: u32 = cups.get(&current).copied().unwrap_or(current + 1);
-        let p2: u32 = cups.get(&p1).copied().unwrap_or(p1 + 1);
-        let p3: u32 = cups.get(&p2).copied().unwrap_or(p2 + 1);
-        let cn: u32 = cups.get(&p3).copied().unwrap_or(p3 + 1);
+        let p1 = cups[current as usize];
+        let p2 = cups[p1 as usize];
+        let p3 = cups[p2 as usize];
+        let cn = cups[p3 as usize];
 
         let mut dest = current - 1;
         while dest == 0 || dest == p1 || dest == p2 || dest == p3 {
@@ -58,17 +59,18 @@ fn part2(mut cups: Vec<u8>) -> u64 {
                 dest - 1
             }
         }
-        let dn: u32 = cups.get(&dest).copied().unwrap_or(dest + 1);
-        cups.insert(current, cn);
-        cups.insert(dest, p1);
-        cups.insert(p3, dn);
+        let dn = cups[dest as usize];
+
+        cups[current as usize] = cn;
+        cups[dest as usize] = p1;
+        cups[p3 as usize] = dn;
 
         current = cn;
     }
 
-    let a1 = cups.get(&1).copied().unwrap();
-    let a2 = cups.get(&a1).copied().unwrap_or(a1 + 1);
-    a1 as u64 * a2 as u64
+    let a1 = cups[1];
+    let a2 = cups[a1 as usize];
+    (a1 as u64) * (a2 as u64)
 }
 
 fn main() {
@@ -76,8 +78,9 @@ fn main() {
     let cups = parse_input(&input);
     let result = part1(cups.clone());
     println!("part1: {}", result);
+    let s = std::time::Instant::now();
     let result = part2(cups);
-    println!("part2: {}", result);
+    println!("part2: {} ({:?})", result, s.elapsed());
 
 }
 
