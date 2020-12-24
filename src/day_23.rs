@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 fn parse_input(input: &str) -> Vec<u8> {
     input.chars().map(|c| c as u8 - '0' as u8).collect()
 }
